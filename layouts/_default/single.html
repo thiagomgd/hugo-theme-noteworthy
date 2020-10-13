@@ -1,34 +1,49 @@
 {{ define "main" }}
 
 <h1 class="post-title">{{ .Title }}</h1>
-    {{ if .Date }}
-    <time>{{ .Date.Format "January 2, 2006" }}</time>
-    {{ end }}
-    <div>
-        <p>
+{{ if .Date }}
+<time>{{ .Date.Format "January 2, 2006" }}</time>
+{{ end }}
+<div>
+    <p>
         {{ .Content }}
-        </p>
-    </div>
-    {{ template "_internal/disqus.html" . }}
+    </p>
+</div>
+{{ template "_internal/disqus.html" . }}
 
-    {{ if .Site.Params.enableKofi }}
+{{ if .Site.Params.enableKofi }}
 
-        <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
-        <script type='text/javascript'>
-            const kofiId = '{{ .Site.Params.Kofi }}';
-            kofiwidget2.init('Support Me on Ko-fi', '#29abe0', kofiId);
-            kofiwidget2.draw();
-        </script> 
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
+<script type='text/javascript'>
+    const kofiId = '{{ .Site.Params.Kofi }}';
+    kofiwidget2.init('Support Me on Ko-fi', '#29abe0', kofiId);
+    kofiwidget2.draw();
+</script>
 
+{{ end }}
+
+<div class="page-footer">
+    {{if or (.Params.reddit) (.Params.tweet)}}
+    <h3>Leave a comment on Reddit or reply on Twitter!</h3>
+    {{if .Params.reddit}}
+    <blockquote class="reddit-card">
+        <a href="{{ .Params.reddit }}">
+            r/geekosaur Lounge</a>
+        from <a href="http://www.reddit.com/r/geekosaur">r/geekosaur</a></blockquote>
+    <script async src="//embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
     {{ end }}
-
-    <div class="page-footer">
-        {{if .Params.tags}}
-        <hr class="footer-divider">
-        {{ range .Params.tags }}
-            <a class="tag" href="/tags/{{ . | urlize }}">#{{.}}</a>
-        {{ end }}
-      {{ end }}
-    </div>
+    {{if .Params.tweet}}
+    {{- $url := printf "https://api.twitter.com/1/statuses/oembed.json?id=%v&dnt=%t" (.Params.tweet) true -}}
+    {{- $json := getJSON $url -}}
+    {{ $json.html | safeHTML }}
+    {{ end }}
+    {{ end }}
+    {{if .Params.tags}}
+    <hr class="footer-divider">
+    {{ range .Params.tags }}
+    <a class="tag" href="/tags/{{ . | urlize }}">#{{.}}</a>
+    {{ end }}
+    {{ end }}
+</div>
 
 {{end}}

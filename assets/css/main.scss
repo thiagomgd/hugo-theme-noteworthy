@@ -319,7 +319,12 @@ nav {
         font-size: 0.95rem;
     }
 }
-
+.article-content, 
+.content-container {
+    img, figure {
+        max-width: 100%;
+    }
+}
 // ARTICLE CONTENT
 .article-content {
     flex: 1 0 auto;
